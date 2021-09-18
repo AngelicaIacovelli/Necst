@@ -1,2 +1,2 @@
 make: 
-	g++ Angelica.cpp -o exe
+	g++ Angelica.cpp -o exe -std=c++11
