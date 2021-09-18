@@ -1,7 +1,7 @@
 #include <iostream>
 #include <boost/math/distributions/poisson.hpp>
 #include <boost/graph/graph_traits.hpp>
-#include<cstdlib>
+#include <cstdlib>
 #include <unistd.h>
 #include <ios>
 #include <fstream>
@@ -37,8 +37,7 @@ void generate_random_graph
     std::pair<bool, edge_descriptor> p;
     G g;
   };
-
-
+/*
   // CSR: Unsorted edge list constructors 
   template<typename InputIterator>
   compressed_sparse_row_graph(edges_are_unsorted_t,
@@ -67,7 +66,7 @@ void dijkstra_shortest_paths_no_color_map
    VertexIndexMap index_map,
    DistanceCompare distance_compare, DistanceWeightCombine distance_weight_combine,
    DistanceInfinity distance_infinity, DistanceZero distance_zero);
-
+*/
 
 /* process_mem_usage(double &, double &) - takes two doubles by reference,
  attempts to read the system-dependent data for a process' virtual memory
@@ -75,6 +74,84 @@ void dijkstra_shortest_paths_no_color_map
 
  On failure, returns 0.0, 0.0 */
 
+// prototipo della funzione -> definisce interfaccia
+void process_mem_usage(double& vm_usage, double& resident_set);
+
+
+int main()
+{
+	unsigned long num_nodes;
+	unsigned long density; 
+
+	cout<<"Inserire numero di nodi: ";
+	cin>> num_nodes;
+	cout<<"Inserire il parametro di densita' in percentuale: ";
+	cin>> density;
+
+	// Preconditions
+
+	do{
+	cout<<"Renserire correttamente il parametro di densita' in percentuale: ";
+	cin>> density;
+	}while(density>100 || density<0);
+
+	do{
+	cout<<"Renserire correttamente il numero di vertici: ";
+	cin>> num_nodes;
+	}while(num_nodes<=0);
+
+	unsigned long L; // L è il numero di archi che voglio calcolare tramite la densità
+
+// La densità di un grafo semplice (Δ) o non orientato è definita come: Δ = 2L / n(n-1)
+// La densità di un grafo (Δ) orientato è definita come: Δ = L / n(n-1)                     
+	L = num_nodes*(num_nodes-1)*density/2;   //Caso non direzionato
+	unsigned int num_edges; // Rendo intero il numero di archi
+	num_edges = L;
+
+// Dichiara grafo g come MutableGraph di boost
+// Richiamo funzione Adjency List
+//COMPLETARE
+// Richiamo funzione Adjency Matrix
+//COMPLETARE
+// Richiamo funzione CSR 
+//COMPLETARE
+
+//Random Generator da passare a generate_random_graph
+// Passare al RanGen il seed -> fa sì che esperimento sia ripetibile
+
+//  Richiamo funzione GENERATE A RANDOM GRAPH 
+// 
+//generate_random_graph(&g, num_nodes, num_edges);  //passo g per indirizzo
+
+
+
+auto start = std::chrono::high_resolution_clock::now(); // record start time
+
+// Richiamo Dijkstra 
+// COMPLETA
+
+auto stop = std::chrono::high_resolution_clock::now(); // record end time
+
+auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+std::cout << "Tempo impiegato: " << duration.count() << "\u00B5s" <<std::endl;
+
+// Misuro memoria utilizzata:
+// https://stackoverflow.com/questions/669438/how-to-get-memory-usage-at-runtime-using-c
+
+using std::cout;
+using std::endl;
+
+double vm, rss;
+process_mem_usage(vm, rss);
+cout << "VM: " << vm << "; RSS: " << rss << endl;
+
+	return 0;
+
+}
+
+
+
+// corpo della funzione
 void process_mem_usage(double& vm_usage, double& resident_set)
 {
    using std::ios_base;
@@ -111,80 +188,5 @@ void process_mem_usage(double& vm_usage, double& resident_set)
    vm_usage     = vsize / 1024.0;
    resident_set = rss * page_size_kb;
 // Sequenza funzioni memoria terminata
-
-
-int main()
-{
-
-unsigned long num_nodes;
-unsigned long density; 
-
-cout<<"Inserire numero di nodi: ";
-cin>> num_nodes;
-cout<<"Inserire il parametro di densita' in percentuale: ";
-cin>> density;
-
-// Preconditions
-
-if(density<=100 && density>=0)
- { 
-    return 0;
- }
-else 
- {
-   cout<<"Renserire correttamente il parametro di densita' in percentuale: ";
-   cin>> density;
- }
-
-if(num_nodes !=0)
- { 
-    return 0;
- }
-else 
- {
-   cout<<"Renserire correttamente il numero di vertici: ";
-   cin>> density;
- }
-
-
-unsigned long L; // L è il numero di archi che voglio calcolare tramite la densità
-
-// La densità di un grafo semplice (Δ) o non orientato è definita come: Δ = 2L / n(n-1)
-// La densità di un grafo (Δ) orientato è definita come: Δ = L / n(n-1)                     
-	L = num_nodes*(num_nodes-1)*density/2;   //Caso non direzionato
-	unsigned int num_edges; // Rendo intero il numero di archi
-	num_edges = L;
-
-//  Richiamo funzione GENERATE A RANDOM GRAPH 
-generate_random_graph(&g, num_nodes, num_edges);  //passo g per indirizzo
-
-// Richiamo funzione Adjency List
-COMPLETARE
-// Richiamo funzione Adjency Matrix
-COMPLETARE
-// Richiamo funzione CSR 
-COMPLETARE
-
-auto start = std::chrono::high_resolution_clock::now(); // record start time
-
-// Richiamo Dijkstra 
-COMPLETA
-
-auto stop = std::chrono::high_resolution_clock::now(); // record end time
-
-auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-std::cout << "Tempo impiegato: " << duration.count() << "\u00B5s" <<std::endl;
-
-// Misuro memoria utilizzata:
-// https://stackoverflow.com/questions/669438/how-to-get-memory-usage-at-runtime-using-c
-
-using std::cout;
-using std::endl;
-
-double vm, rss;
-process_mem_usage(vm, rss);
-cout << "VM: " << vm << "; RSS: " << rss << endl;
-
-	return 0;
 }
 
