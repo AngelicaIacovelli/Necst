@@ -51,7 +51,7 @@ input[3] = seed       */
         }
     }
 
-    const int num_edges = edge_arrays.size();
+    const int num_edges = edges_array.size();
 
 // Genero weights
     int *weights_array = (int*)malloc(sizeof(int)*num_edges);
@@ -64,7 +64,7 @@ input[3] = seed       */
     process_mem_usage(vm, rss, 0);
 
 // Creo Grafo   
-    Graph g(edges_array.begin(), edge_arrays.end(), weights_array, num_nodes);
+    Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
 
     // Utilizzo Memoria 1
     process_mem_usage(vm, rss, 1);

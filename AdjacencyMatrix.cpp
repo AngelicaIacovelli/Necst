@@ -62,7 +62,7 @@ input[3] = seed       */
     process_mem_usage(vm, rss, 0);
 
 // Creo Grafo 
-    Graph g(edges_array.begin(), edge_arrays.end(), weights_array, num_nodes);
+    Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
 
     // Utilizzo Memoria 0 
     process_mem_usage(vm, rss, 1);
