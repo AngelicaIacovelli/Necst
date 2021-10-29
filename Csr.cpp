@@ -24,27 +24,31 @@ typedef std::pair<int, int> Edge;
 
 // MAIN
 
-int main(char *input[]) {
+int main(int argc, char *argv[]) {
 /* Cosa passo al main:
-input[] è un vettore dove:
-input[1] = num_nodes 
-input[2] = density 
-input[3] = seed       */
+argv[] è un vettore dove:
+argv[0] = num iterazioni
+argv[1] = num_nodes 
+argv[2] = density 
+argv[3] = seed       */
 
 
 // fisso numero di nodi 
-    const int num_nodes = atoi(input[1]);
+    const int num_nodes = atoi(argv[1]);
+    std::cout << "Number of nodes: " << num_nodes << std::endl;
 
 // fisso il seed
-    const int seed = atoi(input[3]);
+    const int seed = atoi(argv[3]);
     srand(seed);
+    std::cout << "Seed: " << seed << std::endl;
 
 // Genero edges
     std::vector<Edge> edges_array;
-    const int dens = atoi(input[2]);
+    const int dens = atoi(argv[2]);
+    std::cout << "Density: " << density << "%" << std::endl;
 
-    for(int i=0; i<num_nodes; i++){
-        for(int j=0; j<num_nodes; j++){
+    for(int i=0; i < num_nodes; i++){
+        for(int j=0; j < num_nodes; j++){
             if(dens(density)){
                 edges_array.push_back(Edge(i,j));
             }
@@ -73,6 +77,7 @@ input[3] = seed       */
 
     // Utilizzo memoria 1
     process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Memory usage: " << rss << " kB" << std::endl;
     
     std::vector< vertex_descriptor > p(num_vertices(g));
     std::vector< int > d(num_vertices(g));
@@ -95,6 +100,8 @@ input[3] = seed       */
     auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
     return 0;
 
 }
