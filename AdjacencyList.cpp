@@ -1,4 +1,5 @@
 #include "headers.h"
+#include <string>
 
 // Funzioni per la memoria
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
@@ -96,7 +97,7 @@ argv[3] = seed       */
    
     
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-    std::cout << "Duration Dijkstra: " << duration << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
     return 0;   
 
