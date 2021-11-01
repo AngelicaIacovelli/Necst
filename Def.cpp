@@ -46,12 +46,12 @@ argv[3] = seed      */
 // fisso numero di nodi 
     const int num_nodes = atoi(argv[1]);
     std::cout << "Number of nodes: " << num_nodes << std::endl;
-
+   
 // fisso il seed 
     const int seed = atoi(argv[3]); //atoi convert string to integer
     srand(seed); //srand initialize random number generator
     std::cout << "Seed: " << seed << std::endl;
-   
+
 // Genero edges
     std::vector<Edge> edges_array;
     const int density = atoi(argv[2]);
@@ -70,7 +70,7 @@ argv[3] = seed      */
 // Genero weights
     int *weights = (int*)malloc(sizeof(int)*num_edges);
     std::vector<CsrWeight> weights2;
-    weight random;
+    CsrWeight random;
 
     for(int i = 0; i < num_edges; i++){
         random.w = rand()%(10) + 1;     /*A: random è di tipo csr_weight. Se vedo csr_weight è una struct formata solo dal tipo w! quindi scrivendo random.w posso dire a quanto equivale il campo w*/
@@ -89,16 +89,93 @@ argv[3] = seed      */
 
     // Utilizzo Memoria 1
     process_mem_usage(vm, rss, 1);
-    std::cout << std::fixed << "Memory usage: " << rss << " kB" << std::endl;
+    std::cout << std::fixed << "Adjacency List -> Memory usage: " << rss << " kB" << std::endl;
     
     std::vector< vertex_list > list_p(num_vertices(list_g));
     std::vector< int > list_d(num_vertices(list_g));
     vertex_list list_s = vertex(V, list_g);
 
+// dijkstra algorithm for list graph   
+    
+    auto start = std::chrono::high_resolution_clock::now();
 
+    dijkstra_shortest_paths_no_color_map(list_g, list_s,
+        predecessor_map(make_iterator_property_map(
+                            list_p.begin(), get(vertex_index, list_g)))
+        .distance_map(make_iterator_property_map(
+                list_d.begin(), get(vertex_index, list_g))));
 
+    auto stop = std::chrono::high_resolution_clock::now();
 
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
+ // Utilizzo Memoria 0  
+    process_mem_usage(vm, rss, 0);
+
+// Creo Grafo (Adjacency Matrix)
+    matrix matrix_g(edges_array.begin(), edges_array.end(), weights, num_nodes);
+
+    // Utilizzo Memoria 1 
+    process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Adjacency Matrix -> Memory usage: " << rss << " kB" << std::endl;
+    
+    std::vector< vertex_matrix > matrix_p(num_vertices(matrix_g));
+    std::vector< int > matrix_d(num_vertices(matrix_g));
+
+    vertex_matrix matrix_s = vertex(V, matrix_g);
+
+// Dijkstra
+
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();    
+
+    dijkstra_shortest_paths_no_color_map(matrix_g, matrix_s,
+        predecessor_map(make_iterator_property_map(
+                            matrix_p.begin(), get(vertex_index, matrix_g)))
+        .distance_map(make_iterator_property_map(
+                matrix_d.begin(), get(vertex_index, matrix_g))));
+
+    // Stop Tempo
+    stop = std::chrono::high_resolution_clock::now();
+
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
+ // Utilizzo Memoria 0  
+    process_mem_usage(vm, rss, 0);
+
+// Creo Grafo (Csr)
+    csr csr_g(edges_are_unsorted, edges_array.begin(), edges_array.end(), weights2.begin(), num_nodes);
+
+    // Utilizzo memoria 1
+    process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Csr -> Memory usage: " << rss << " kB" << std::endl;
+    
+    std::vector< vertex_csr > csr_p(num_vertices(csr_g));
+    std::vector< int > csr_d(num_vertices(csr_g));
+    vertex_csr csr_s = vertex(V, csr_g);
+
+// Dijkstra 
+
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();    
+
+    dijkstra_shortest_paths_no_color_map(csr_g, csr_s,
+         predecessor_map(make_iterator_property_map(
+                            csr_p.begin(), get(boost::vertex_index, csr_g))).
+         distance_map(make_iterator_property_map(
+                csr_d.begin(), get(vertex_index, csr_g))).
+         weight_map(boost::get(&CsrWeight::w, csr_g))
+        );
+
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
+
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
+ 
     return 0;   
 
 }
@@ -106,6 +183,7 @@ argv[3] = seed      */
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff)
 {
     vm_usage = 0;
+  
     unsigned long vsize;
     unsigned long rss;
     {
