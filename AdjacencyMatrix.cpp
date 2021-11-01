@@ -93,7 +93,7 @@ argv[3] = seed       */
     auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-    std::cout << "Duration Dijkstra: " << duration << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
     return 0;
 

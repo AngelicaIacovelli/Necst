@@ -6,3 +6,7 @@ Matrix:
 
 Csr: 
 	g++ Csr.cpp -o exeCsr -std=c++11
+
+Def:
+	g++ Def.cpp -o exeDef -std=c++11
+

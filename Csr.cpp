@@ -44,7 +44,7 @@ argv[3] = seed       */
 
 // Genero edges
     std::vector<Edge> edges_array;
-    const int dens = atoi(argv[2]);
+    const int density = atoi(argv[2]);
     std::cout << "Density: " << density << "%" << std::endl;
 
     for(int i=0; i < num_nodes; i++){
@@ -100,7 +100,7 @@ argv[3] = seed       */
     auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-    std::cout << "Duration Dijkstra: " << duration << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
     return 0;
 
