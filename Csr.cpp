@@ -1,6 +1,6 @@
 #include "headers.h"
 
-// Funzioni per la memoria
+// Funzione utilizzo memoria
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
 unsigned long vm;
 unsigned long rss = 0;

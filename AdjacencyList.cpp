@@ -1,10 +1,11 @@
 #include "headers.h"
 #include <string>
 
-// Funzioni per la memoria
+// Funzione utilizzo memoria
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
 unsigned long vm;
 unsigned long rss = 0;
+
 // Funzione dens 
 bool dens(int d) {
     return rand()%100+1 < d; 

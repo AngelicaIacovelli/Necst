@@ -6,6 +6,7 @@
 #include <algorithm> 
 #include <vector> 
 #include <utility> // per pair
+#include <bits/stdc++.h> 
 
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -15,3 +16,9 @@
 #include <boost/graph/dijkstra_shortest_paths_no_color_map.hpp>
 
 using namespace boost;
+
+
+#include <string>
+#include <fstream>
+#include <vector>
+#include <utility> // std::pair
