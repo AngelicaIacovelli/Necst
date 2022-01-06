@@ -17,6 +17,7 @@ typedef std::pair<int, int> Edge;
 // This class couples together a pair of values, which may be of different types (T1 and T2). 
 // The individual values can be accessed through its public members first and second.
 // Pairs are a particular case of tuple.
+
 //MAIN
 int main(int argc, char *argv[]) { 
 /* Cosa passo al main:
@@ -82,6 +83,18 @@ argv[3] = seed       */
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
     std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
+
+    // johnson_all_pairs_shortest_paths
+    
+    int D[V][V];
+
+    //bool
+
+    if (johnson_all_pairs_shortest_paths(g, D, get(vertex_index, g), weights_array)) {
+        std::cout << "Matrix D: " << D << std::endl;
+    } else {
+    }
 
     return 0;   
 
