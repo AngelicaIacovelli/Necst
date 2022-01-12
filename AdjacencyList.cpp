@@ -87,7 +87,7 @@ argv[3] = seed       */
 
     // johnson_all_pairs_shortest_paths
     
-    int D[V][V];
+    int D[num_nodes][num_nodes];
 
     //bool
 
@@ -95,7 +95,7 @@ argv[3] = seed       */
         std::cout << "Matrix D: " << D << std::endl;
     } else {
     }
-
+    
     return 0;   
 
 }

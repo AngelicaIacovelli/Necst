@@ -7,6 +7,7 @@
 #include <vector> 
 #include <utility> // per pair
 #include <bits/stdc++.h> 
+#include <iomanip>
 
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
