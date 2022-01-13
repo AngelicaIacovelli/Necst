@@ -1,5 +1,4 @@
 #include "headers.h"
-#include <string>
 
 // Funzione utilizzo memoria
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
@@ -26,10 +25,11 @@ argv[0] = num iterazioni
 argv[1] = num_nodes 
 argv[2] = density 
 argv[3] = seed       */
-// fisso numero di nodi 
+
+// Fisso numero di nodi 
     const int num_nodes = atoi(argv[1]);
     std::cout << "Number of nodes: " << num_nodes << std::endl;
-// fisso il seed 
+// Fisso il seed 
     const int seed = atoi(argv[3]); //atoi convert string to integer
     srand(seed); //srand initialize random number generator
     std::cout << "Seed: " << seed << std::endl;
@@ -37,7 +37,7 @@ argv[3] = seed       */
 // Genero edges
     std::vector<Edge> edges_array;
     const int density = atoi(argv[2]);
-    std::cout << "Density: " << density << "%" << std::endl;
+    std::cout << "Density: " << density << "%\n" << std::endl;
     for(int i=0; i < num_nodes; i++) {
         for(int j=0; j < num_nodes; j++) {
              if(dens(density)){
@@ -46,56 +46,107 @@ argv[3] = seed       */
         }
     }
     const int num_edges = edges_array.size();
+
 // Genero weights
     int *weights_array = (int*)malloc(sizeof(int)*num_edges);
     for(int i = 0; i < num_edges; i++) {
         weights_array[i] = rand()%(10) + 1;
     }
 
-// Genero nodo radice
-    int V = rand()%(num_nodes-2);
-
-    // Utilizzo Memoria 0  
+// Utilizzo Memoria 0  
     process_mem_usage(vm, rss, 0);
     
 // Creo Grafo   
     Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
-    // Utilizzo Memoria 1
-    process_mem_usage(vm, rss, 1);
-    std::cout << std::fixed << "Memory usage: " << rss << " kB" << std::endl;
     
+// Utilizzo Memoria 1
+    process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Memory usage: " << rss << " kB\n" << std::endl;
+    
+// Genero descrittori vertici e distance map
     std::vector<vertex_descriptor> p(num_vertices(g));
-    std::vector<int> d(num_vertices(g));
+    std::vector < int >d(num_vertices(g), (std::numeric_limits < int >::max)());
 
-
+// Genero nodo radice
+    int V = rand()%(num_nodes-2);
     vertex_descriptor s = vertex(V, g);
 
 // Dijkstra
     // Avvio misurazione tempo
-    auto start = std::chrono::high_resolution_clock::now();    
+    auto start = std::chrono::high_resolution_clock::now();   
+    // Eseguo Dijkstra 
     dijkstra_shortest_paths_no_color_map(g, s,
-        predecessor_map(make_iterator_property_map(
-                            p.begin(), get(vertex_index, g)))
-        .distance_map(make_iterator_property_map(
-                d.begin(), get(vertex_index, g))));
+        predecessor_map(make_iterator_property_map(p.begin(), get(vertex_index, g)))
+        .distance_map(make_iterator_property_map(d.begin(), get(vertex_index, g))));
     // Stop tempo
     auto stop = std::chrono::high_resolution_clock::now();
 
+    // Calcolo e stampo tempo di esecuzione
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s\n" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
+    // Stampo i risultati
+    std::cout << "Source vertex: " << V << std::endl;
+    std::cout << "Distances and parents:" << std::endl;
+    graph_traits < Graph >::vertex_iterator vi, vend;
+    for (tie(vi, vend) = vertices(g); vi != vend; ++vi) {
+        if (d[*vi] == (std::numeric_limits<int>::max)())
+            std::cout << "distance(" << *vi << ") = " << std::setw(7) << "inf, ";
+        else
+            std::cout << "distance(" << *vi << ") = " << std::setw(5) << d[*vi] << ", ";
+        std::cout << "parent(" << *vi << ") = " << p[*vi] << std::endl;
+    }
+    std::cout << std::endl;
 
-    // johnson_all_pairs_shortest_paths
+// Johnson
+    // Alloco Distance Matrix
+    int **D = (int**)malloc(sizeof(int*)*num_nodes);
+    for (int i = 0; i < num_nodes; i++) 
+        D[i] = (int*)malloc(sizeof(int)*num_nodes);
     
-    int D[num_nodes][num_nodes];
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();   
 
-    //bool
+    // Eseguo Johnson
+   johnson_all_pairs_shortest_paths(g, D, distance_map(&d[0]));
 
-    if (johnson_all_pairs_shortest_paths(g, D, get(vertex_index, g), weights_array)) {
-        std::cout << "Matrix D: " << D << std::endl;
-    } else {
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
+
+    // Calcolo e stampo tempo di esecuzione
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
+    // Stampo i risultati
+    std::cout << "       ";
+    for (int k = 0; k < num_nodes; ++k)
+        std::cout << std::setw(5) << k;
+    std::cout << std::endl;
+    for (int i = 0; i < num_nodes; ++i) {
+        std::cout << std::setw(3) << i << " -> ";
+        for (int j = 0; j < num_nodes; ++j) {
+            if (D[i][j] == (std::numeric_limits<int>::max)())
+                std::cout << std::setw(5) << "inf";
+            else
+                std::cout << std::setw(5) << D[i][j];
+        }
+        std::cout << std::endl;
     }
     
+    std::ofstream fout("figs/graph.dot");
+    fout << "digraph A {\n"
+    << "  rankdir=LR\n"
+    << "size=\"5,3\"\n"
+    << "ratio=\"fill\"\n"
+    << "edge[style=\"bold\"]\n" << "node[shape=\"circle\"]\n";
+
+    graph_traits < Graph >::edge_iterator ei, ei_end;
+    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        fout << source(*ei, g) << " -> " << target(*ei, g) 
+        << "[label=" << get(edge_weight, g)[*ei] << "]\n";
+
+    fout << "}\n";
+
     return 0;   
 
 }

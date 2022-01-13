@@ -6,8 +6,9 @@
 #include <algorithm> 
 #include <vector> 
 #include <utility> // per pair
-#include <bits/stdc++.h> 
 #include <iomanip>
+#include <string>
+#include <malloc/_malloc.h>
 
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -20,9 +21,3 @@
 #include <boost/graph/graphviz.hpp>
 
 using namespace boost;
-
-
-#include <string>
-#include <fstream>
-#include <vector>
-#include <utility> // std::pair
