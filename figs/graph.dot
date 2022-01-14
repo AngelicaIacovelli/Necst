@@ -1,6 +1,6 @@
 digraph A {
   rankdir=LR
-size="5,3"
+size="5,3"    
 ratio="fill"
 edge[style="bold"]
 node[shape="circle"]

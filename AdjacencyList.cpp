@@ -85,7 +85,7 @@ argv[3] = seed       */
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
     std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s\n" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
-    // Stampo i risultati
+/*    // Stampo i risultati
     std::cout << "Source vertex: " << V << std::endl;
     std::cout << "Distances and parents:" << std::endl;
     graph_traits < Graph >::vertex_iterator vi, vend;
@@ -97,6 +97,7 @@ argv[3] = seed       */
         std::cout << "parent(" << *vi << ") = " << p[*vi] << std::endl;
     }
     std::cout << std::endl;
+*/
 
 // Johnson
     // Alloco Distance Matrix
@@ -117,6 +118,7 @@ argv[3] = seed       */
     duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
     std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
+/*
     // Stampo i risultati
     std::cout << "       ";
     for (int k = 0; k < num_nodes; ++k)
@@ -147,6 +149,7 @@ argv[3] = seed       */
 
     fout << "}\n";
 
+*/
     return 0;   
 
 }
