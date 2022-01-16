@@ -1,19 +1,24 @@
 #include "headers.h"
 
+#include <malloc/_malloc.h>
+#include <ostream>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <ios>
 #include <iostream>
 #include <fstream>
 #include <string>
 
-void process_mem_usage(double& vm_usage, double& resident_set)
+unsigned long vm, rss0, rss;
+
+void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set)
 {
    using std::ios_base;
    using std::ifstream;
    using std::string;
 
-   vm_usage     = 0.0;
-   resident_set = 0.0;
+   vm_usage     = 0;
+   resident_set = 0;
 
    // 'file' stat seems to give the most reliable results
    //
@@ -100,19 +105,20 @@ argv[3] = seed       */
     }
 
     // Utilizzo Memoria 0  
-    double vm, rss;
-    process_mem_usage(vm, rss);
-    double rss0;
-    rss0 = rss;
+    process_mem_usage(vm, rss0);
+    std::cout<<rss0<<std::endl;
 
 // Creo Grafo 
-    Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
+    int* a = (int*)calloc(25000,sizeof(int));
 
     // Utilizzo Memoria 1 
     process_mem_usage(vm, rss);
+    std::cout<<rss<<std::endl;
+
     rss = rss - rss0;
     std::cout << std::fixed << "Memory usage: " << rss << " kB" << std::endl;
 
+    Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
 
     std::vector< vertex_descriptor > p(num_vertices(g));
     std::vector< int > d(num_vertices(g));
