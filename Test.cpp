@@ -1,6 +1,5 @@
 #include "headers.h"
 
-#include <malloc/_malloc.h>
 #include <ostream>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -9,7 +8,7 @@
 #include <fstream>
 #include <string>
 
-unsigned long vm, rss0, rss;
+unsigned long vm0, vm, rss0, rss;
 
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set)
 {
@@ -44,7 +43,7 @@ void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set)
    stat_stream.close();
 
    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
-   vm_usage     = vsize / 1024.0;
+   vm_usage     = vsize / 1024;
    resident_set = rss * page_size_kb;
 }
 
@@ -105,20 +104,19 @@ argv[3] = seed       */
     }
 
     // Utilizzo Memoria 0  
-    process_mem_usage(vm, rss0);
-    std::cout<<rss0<<std::endl;
+    process_mem_usage(vm0, rss0);
+    std::cout << "vm = " << vm0 << ", rss = " << rss0 << std::endl;
 
 // Creo Grafo 
-    int* a = (int*)calloc(25000,sizeof(int));
+    Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
 
     // Utilizzo Memoria 1 
     process_mem_usage(vm, rss);
-    std::cout<<rss<<std::endl;
+    std::cout << "vm = " << vm << ", rss = " << rss << std::endl;
 
     rss = rss - rss0;
-    std::cout << std::fixed << "Memory usage: " << rss << " kB" << std::endl;
-
-    Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
+    vm -= vm0;
+    std::cout << std::fixed << "Memory usage\n\tvm = " << vm << " kB\n\trss = " << rss <<" kB" << std::endl;
 
     std::vector< vertex_descriptor > p(num_vertices(g));
     std::vector< int > d(num_vertices(g));
