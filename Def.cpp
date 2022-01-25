@@ -126,6 +126,25 @@ argv[4] = num iterazioni  */
         std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
         r[1] = duration.count();
     
+    // Johnson
+        // Alloco Distance Matrix
+        int **D1 = (int**)malloc(sizeof(int*)*num_nodes);
+        for (int i = 0; i < num_nodes; i++) 
+            D1[i] = (int*)malloc(sizeof(int)*num_nodes);
+        
+        // Avvio misurazione tempo
+        start = std::chrono::high_resolution_clock::now();   
+
+        // Eseguo Johnson
+        johnson_all_pairs_shortest_paths(list_g, D1);
+
+        // Stop tempo
+        stop = std::chrono::high_resolution_clock::now();
+
+        // Calcolo e stampo tempo di esecuzione
+        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+        std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
     // Utilizzo Memoria 0  
         process_mem_usage(vm, rss, 0);
 
@@ -160,6 +179,24 @@ argv[4] = num iterazioni  */
         std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
         r[3] = duration.count();
         
+    // Johnson
+        // Alloco Distance Matrix
+        int **D2 = (int**)malloc(sizeof(int*)*num_nodes);
+        for (int i = 0; i < num_nodes; i++) 
+            D2[i] = (int*)malloc(sizeof(int)*num_nodes);
+        
+        // Avvio misurazione tempo
+        start = std::chrono::high_resolution_clock::now();   
+
+        // Eseguo Johnson
+        johnson_all_pairs_shortest_paths(matrix_g, D2);
+
+        // Stop tempo
+        stop = std::chrono::high_resolution_clock::now();
+
+        // Calcolo e stampo tempo di esecuzione
+        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+        std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
     // Utilizzo Memoria 0  
         process_mem_usage(vm, rss, 0);
@@ -196,6 +233,24 @@ argv[4] = num iterazioni  */
         std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
         r[5] = duration.count();
 
+    // Johnson
+        // Alloco Distance Matrix
+        int **D3 = (int**)malloc(sizeof(int*)*num_nodes);
+        for (int i = 0; i < num_nodes; i++) 
+            D3[i] = (int*)malloc(sizeof(int)*num_nodes);
+        
+        // Avvio misurazione tempo
+        start = std::chrono::high_resolution_clock::now();   
+
+        // Eseguo Johnson
+        johnson_all_pairs_shortest_paths(csr_g, D3));
+
+        // Stop tempo
+        stop = std::chrono::high_resolution_clock::now();
+
+        // Calcolo e stampo tempo di esecuzione
+        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+        std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
         // Salvo i risultati su data.csv 
             std::ifstream myfile;

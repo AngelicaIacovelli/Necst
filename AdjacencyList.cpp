@@ -99,6 +99,8 @@ argv[3] = seed       */
     std::cout << std::endl;
 */
 
+
+
 // Johnson
     // Alloco Distance Matrix
     int **D = (int**)malloc(sizeof(int*)*num_nodes);
@@ -138,7 +140,7 @@ argv[3] = seed       */
     std::ofstream fout("figs/graph.dot");
     fout << "digraph A {\n"
     << "  rankdir=LR\n"
-    << "size=\"5,3\"\n"
+    << "size=\"5,3\"\n"   // %immagine alta 5 e larga 3 pollici (con gdpi definirò densità pixel)
     << "ratio=\"fill\"\n"
     << "edge[style=\"bold\"]\n" << "node[shape=\"circle\"]\n";
 

@@ -102,6 +102,25 @@ argv[3] = seed       */
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
     std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
 
+// Johnson
+    // Alloco Distance Matrix
+    int **D = (int**)malloc(sizeof(int*)*num_nodes);
+    for (int i = 0; i < num_nodes; i++) 
+        D[i] = (int*)malloc(sizeof(int)*num_nodes);
+    
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();   
+
+    // Eseguo Johnson
+    johnson_all_pairs_shortest_paths(g, D, distance_map(&d[0]));
+
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
+
+    // Calcolo e stampo tempo di esecuzione
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+
     return 0;
 
 }
