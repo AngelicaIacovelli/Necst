@@ -1,19 +1,23 @@
 #include "headers.h"
 
+#include <ostream>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <ios>
 #include <iostream>
 #include <fstream>
 #include <string>
 
-void process_mem_usage(double& vm_usage, double& resident_set)
+unsigned long vm0, vm, rss0, rss;
+
+void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set)
 {
    using std::ios_base;
    using std::ifstream;
    using std::string;
 
-   vm_usage     = 0.0;
-   resident_set = 0.0;
+   vm_usage     = 0;
+   resident_set = 0;
 
    // 'file' stat seems to give the most reliable results
    //
@@ -39,7 +43,7 @@ void process_mem_usage(double& vm_usage, double& resident_set)
    stat_stream.close();
 
    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
-   vm_usage     = vsize / 1024.0;
+   vm_usage     = vsize / 1024;
    resident_set = rss * page_size_kb;
 }
 
@@ -100,19 +104,19 @@ argv[3] = seed       */
     }
 
     // Utilizzo Memoria 0  
-    double vm, rss;
-    process_mem_usage(vm, rss);
-    double rss0;
-    rss0 = rss;
+    process_mem_usage(vm0, rss0);
+    std::cout << "vm = " << vm0 << ", rss = " << rss0 << std::endl;
 
 // Creo Grafo 
     Graph g(edges_array.begin(), edges_array.end(), weights_array, num_nodes);
 
     // Utilizzo Memoria 1 
     process_mem_usage(vm, rss);
-    rss = rss - rss0;
-    std::cout << std::fixed << "Memory usage: " << rss << " kB" << std::endl;
+    std::cout << "vm = " << vm << ", rss = " << rss << std::endl;
 
+    rss = rss - rss0;
+    vm -= vm0;
+    std::cout << std::fixed << "Memory usage\n\tvm = " << vm << " kB\n\trss = " << rss <<" kB" << std::endl;
 
     std::vector< vertex_descriptor > p(num_vertices(g));
     std::vector< int > d(num_vertices(g));
@@ -142,5 +146,4 @@ argv[3] = seed       */
     return 0;
 
 }
-
 
