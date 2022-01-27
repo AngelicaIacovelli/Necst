@@ -13,3 +13,6 @@ Def:
 Test:
 	g++ Test.cpp -o exeTest -std=c++11
 
+Graph:
+	g++ Graph.cpp -o exeGraph -std=c++11
+
