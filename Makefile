@@ -13,6 +13,9 @@ Def:
 Test:
 	g++ Test.cpp -o exeTest -std=c++11
 
-Graph:
-	g++ Graph.cpp -o exeGraph -std=c++11
+ListGraph:
+	g++ ListGraph.cpp -o exeListGraph -std=c++11
+
+MatrixGraph:
+	g++ MatrixGraph.cpp -o exeMatrixGraph -std=c++11
 

@@ -33,16 +33,17 @@ int main() {
   vector<int> adj[V];
 
 /*
-  // Add edges
+  //1 TENTATIVO: 
+  //Add edges
   addEdge(adj, 0, 1);
   addEdge(adj, 0, 2);
   addEdge(adj, 0, 3);
-  addEdge(adj, 1, 2);
+  addEdge(adj, 1, 2); 
   printGraph(adj, V);  
 
 */
 
-// https://java2blog.com/read-csv-file-in-cpp/#:~:text=To%20read%20a%20CSV%20file%2C,variable%20as%20its%20second%20argument.
+// Reading the csv lines: https://java2blog.com/read-csv-file-in-cpp/#:~:text=To%20read%20a%20CSV%20file%2C,variable%20as%20its%20second%20argument.
 
 	string fname;
 	cout<<"facebook_combined.csv";
@@ -85,11 +86,13 @@ int main() {
         s2 = content[i][j];
       }
 		}
+    // Adding adges to the Adjacency List 
     e1 = stoi(s1);
     e2 = stoi(s2);
 		addEdge(adj, e1, e2);
 	}
 
+// Output of the Adjacency List
 printGraph(adj, V);
 
 }
