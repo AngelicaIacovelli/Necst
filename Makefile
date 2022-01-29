@@ -15,7 +15,7 @@ Test:
 
 ListGraph:
 	g++ ListGraph.cpp -o exeListGraph -std=c++11
-
+	
 MatrixGraph:
 	g++ MatrixGraph.cpp -o exeMatrixGraph -std=c++11
 
