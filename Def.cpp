@@ -49,7 +49,7 @@ argv[3] = seed
 */ 
 
     // flag per indicare se eseguire o meno Johnson
-    bool all_pairs = 0;
+    bool all_pairs = 1;
 
     // flag per indicare se stampare o meno i risultati di Dijstra (e Johnson)
     bool verbose = 0;
