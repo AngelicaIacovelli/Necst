@@ -47,6 +47,8 @@ argv[1] = num_nodes
 argv[2] = density 
 argv[3] = seed    
 */ 
+    // flag per indicare se stampare o meno i risultati di Dijstra e Johnson
+    bool verbose = 0;
 
     // fisso numero di nodi 
     const int num_nodes = atoi(argv[1]);
@@ -118,6 +120,21 @@ argv[3] = seed
     std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
     r[1] = duration.count();
 
+    if (verbose){
+        // Stampo i risultati
+        std::cout << "Source vertex: " << V << std::endl;
+        std::cout << "Distances and parents:" << std::endl;
+        graph_traits < list >::vertex_iterator vi, vend;
+        for (tie(vi, vend) = vertices(list_g); vi != vend; ++vi) {
+            if (list_d[*vi] == (std::numeric_limits<int>::max)())
+                std::cout << "distance(" << *vi << ") = " << std::setw(7) << "inf, ";
+            else
+                std::cout << "distance(" << *vi << ") = " << std::setw(5) << list_d[*vi] << ", ";
+            std::cout << "parent(" << *vi << ") = " << list_p[*vi] << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
 
     ////// Adjaceny Matrix
     // Utilizzo Memoria 0  
@@ -152,6 +169,21 @@ argv[3] = seed
     duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
     std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
     r[4] = duration.count();
+
+    if (verbose){
+        // Stampo i risultati
+        std::cout << "Source vertex: " << V << std::endl;
+        std::cout << "Distances and parents:" << std::endl;
+        graph_traits < matrix >::vertex_iterator vi, vend;
+        for (tie(vi, vend) = vertices(matrix_g); vi != vend; ++vi) {
+            if (matrix_d[*vi] == (std::numeric_limits<int>::max)())
+                std::cout << "distance(" << *vi << ") = " << std::setw(7) << "inf, ";
+            else
+                std::cout << "distance(" << *vi << ") = " << std::setw(5) << matrix_d[*vi] << ", ";
+            std::cout << "parent(" << *vi << ") = " << matrix_p[*vi] << std::endl;
+        }
+        std::cout << std::endl;
+    }
 
 
     ////// Compressed Sparse Row
@@ -188,7 +220,22 @@ argv[3] = seed
     std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
     r[7] = duration.count();
     
+    if (verbose){
+        // Stampo i risultati
+        std::cout << "Source vertex: " << V << std::endl;
+        std::cout << "Distances and parents:" << std::endl;
+        graph_traits < csr >::vertex_iterator vi, vend;
+        for (tie(vi, vend) = vertices(csr_g); vi != vend; ++vi) {
+            if (csr_d[*vi] == (std::numeric_limits<int>::max)())
+                std::cout << "distance(" << *vi << ") = " << std::setw(7) << "inf, ";
+            else
+                std::cout << "distance(" << *vi << ") = " << std::setw(5) << csr_d[*vi] << ", ";
+            std::cout << "parent(" << *vi << ") = " << csr_p[*vi] << std::endl;
+        }
+        std::cout << std::endl;
+    }
     
+
     // Johnson (tenuto alla fine per evitare interferenza su memoria rilevata)
     // Alloco Distance Matrix
     int **D1 = (int**)malloc(sizeof(int*)*num_nodes);
@@ -207,6 +254,24 @@ argv[3] = seed
     std::cout << "Duration Johnson (List): " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
     r[2] = duration.count();
     
+    if (verbose){    
+        // Stampo i risultati
+        std::cout << "       ";
+        for (int k = 0; k < num_nodes; ++k)
+            std::cout << std::setw(5) << k;
+        std::cout << std::endl;
+        for (int i = 0; i < num_nodes; ++i) {
+            std::cout << std::setw(3) << i << " -> ";
+            for (int j = 0; j < num_nodes; ++j) {
+                if (D1[i][j] == (std::numeric_limits<int>::max)())
+                    std::cout << std::setw(5) << "inf";
+                else
+                    std::cout << std::setw(5) << D1[i][j];
+            }
+            std::cout << std::endl;
+        }
+    }
+
     ////// Adjaceny Matrix
     // Avvio misurazione tempo
     start = std::chrono::high_resolution_clock::now();   
@@ -218,6 +283,24 @@ argv[3] = seed
     duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
     std::cout << "Duration Johnson (Matrix): " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
     r[5] = duration.count();
+
+    if (verbose){    
+        // Stampo i risultati
+        std::cout << "       ";
+        for (int k = 0; k < num_nodes; ++k)
+            std::cout << std::setw(5) << k;
+        std::cout << std::endl;
+        for (int i = 0; i < num_nodes; ++i) {
+            std::cout << std::setw(3) << i << " -> ";
+            for (int j = 0; j < num_nodes; ++j) {
+                if (D1[i][j] == (std::numeric_limits<int>::max)())
+                    std::cout << std::setw(5) << "inf";
+                else
+                    std::cout << std::setw(5) << D1[i][j];
+            }
+            std::cout << std::endl;
+        }
+    }
 
     ////// CSR
     // Avvio misurazione tempo
@@ -236,6 +319,24 @@ argv[3] = seed
     std::cout << "Duration Johnson (CSR): " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
     r[8] = duration.count();
 
+    if (verbose){    
+        // Stampo i risultati
+        std::cout << "       ";
+        for (int k = 0; k < num_nodes; ++k)
+            std::cout << std::setw(5) << k;
+        std::cout << std::endl;
+        for (int i = 0; i < num_nodes; ++i) {
+            std::cout << std::setw(3) << i << " -> ";
+            for (int j = 0; j < num_nodes; ++j) {
+                if (D1[i][j] == (std::numeric_limits<int>::max)())
+                    std::cout << std::setw(5) << "inf";
+                else
+                    std::cout << std::setw(5) << D1[i][j];
+            }
+            std::cout << std::endl;
+        }
+    }
+
 
     // Salvo i risultati su data.csv 
     std::ifstream myfile;
@@ -244,26 +345,23 @@ argv[3] = seed
         std::ofstream myfile;
         myfile.close();
         myfile.open ("data.csv",std::ios_base::app);
-        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
-        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
-        myfile << num_nodes << "," << seed << "," << density << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
+        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+        myfile << num_nodes << "," << density << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
         myfile.close();
-
     } else {
         std::ofstream myfile;
         myfile.close();
         myfile.open ("data.csv");
-        myfile << "Number of nodes,Seed,Density (%),Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
-        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
-        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
-        myfile << num_nodes << "," << seed << "," << density << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
+        myfile << "Number of nodes,Density (%),Seed,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
+        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+        myfile << num_nodes << "," << density << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
         myfile.close();
     }
-    
-
     return 0;    
-
 }
+
 
 void process_mem_usage(long& vm_usage, long& resident_set, bool diff)
 {   
