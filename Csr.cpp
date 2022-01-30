@@ -112,7 +112,12 @@ argv[3] = seed       */
     start = std::chrono::high_resolution_clock::now();   
 
     // Eseguo Johnson
-    johnson_all_pairs_shortest_paths(g, D, distance_map(&d[0]));
+    johnson_all_pairs_shortest_paths(g, D, 
+         predecessor_map(make_iterator_property_map(
+                p.begin(), get(boost::vertex_index, g))).
+         distance_map(make_iterator_property_map(
+                d.begin(), get(vertex_index, g))).
+         weight_map(boost::get(&weight::w, g)));
 
     // Stop tempo
     stop = std::chrono::high_resolution_clock::now();

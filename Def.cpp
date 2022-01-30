@@ -3,9 +3,9 @@
 //L'input per il terminal sarà: Number of nodes, Density, Seed, Num Iterazioni.
 
 // inizializzo array che conterrà gli output
-int r [] = {0, 0, 0, 0, 0, 0};
+unsigned long r [] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-std::vector<double> results;
+// std::vector<double> results;
 
 // Funzione utilizzo memoria
 void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
@@ -144,6 +144,7 @@ argv[4] = num iterazioni  */
         // Calcolo e stampo tempo di esecuzione
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
         std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+        r[2] = duration.count();
 
     // Utilizzo Memoria 0  
         process_mem_usage(vm, rss, 0);
@@ -154,7 +155,7 @@ argv[4] = num iterazioni  */
         // Utilizzo Memoria 1 
         process_mem_usage(vm, rss, 1);
         std::cout << std::fixed << "Adjacency Matrix -> Memory usage: " << rss << " kB" << std::endl;
-        r[2] = rss;
+        r[3] = rss;
         
         std::vector< vertex_matrix > matrix_p(num_vertices(matrix_g));
         std::vector< int > matrix_d(num_vertices(matrix_g));
@@ -177,19 +178,19 @@ argv[4] = num iterazioni  */
 
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
         std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[3] = duration.count();
+        r[4] = duration.count();
         
     // Johnson
         // Alloco Distance Matrix
-        int **D2 = (int**)malloc(sizeof(int*)*num_nodes);
-        for (int i = 0; i < num_nodes; i++) 
-            D2[i] = (int*)malloc(sizeof(int)*num_nodes);
+        // int **D2 = (int**)malloc(sizeof(int*)*num_nodes);
+        // for (int i = 0; i < num_nodes; i++) 
+        //     D2[i] = (int*)malloc(sizeof(int)*num_nodes);
         
         // Avvio misurazione tempo
         start = std::chrono::high_resolution_clock::now();   
 
         // Eseguo Johnson
-        johnson_all_pairs_shortest_paths(matrix_g, D2);
+        johnson_all_pairs_shortest_paths(matrix_g, D1);
 
         // Stop tempo
         stop = std::chrono::high_resolution_clock::now();
@@ -197,6 +198,7 @@ argv[4] = num iterazioni  */
         // Calcolo e stampo tempo di esecuzione
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
         std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+        r[5] = duration.count();
 
     // Utilizzo Memoria 0  
         process_mem_usage(vm, rss, 0);
@@ -207,7 +209,7 @@ argv[4] = num iterazioni  */
         // Utilizzo memoria 1
         process_mem_usage(vm, rss, 1);
         std::cout << std::fixed << "Csr -> Memory usage: " << rss << " kB" << std::endl;
-        r[4] = rss;
+        r[6] = rss;
 
         std::vector< vertex_csr > csr_p(num_vertices(csr_g));
         std::vector< int > csr_d(num_vertices(csr_g));
@@ -231,19 +233,24 @@ argv[4] = num iterazioni  */
 
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
         std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[5] = duration.count();
+        r[7] = duration.count();
 
     // Johnson
         // Alloco Distance Matrix
-        int **D3 = (int**)malloc(sizeof(int*)*num_nodes);
-        for (int i = 0; i < num_nodes; i++) 
-            D3[i] = (int*)malloc(sizeof(int)*num_nodes);
+        // int **D3 = (int**)malloc(sizeof(int*)*num_nodes);
+        // for (int i = 0; i < num_nodes; i++) 
+        //     D3[i] = (int*)malloc(sizeof(int)*num_nodes);
         
         // Avvio misurazione tempo
         start = std::chrono::high_resolution_clock::now();   
 
         // Eseguo Johnson
-        johnson_all_pairs_shortest_paths(csr_g, D3));
+        johnson_all_pairs_shortest_paths(csr_g, D1, 
+            predecessor_map(make_iterator_property_map(
+                    csr_p.begin(), get(boost::vertex_index, csr_g))).
+            distance_map(make_iterator_property_map(
+                    csr_d.begin(), get(boost::vertex_index, csr_g))).
+            weight_map(boost::get(&CsrWeight::w, csr_g)));
 
         // Stop tempo
         stop = std::chrono::high_resolution_clock::now();
@@ -251,6 +258,7 @@ argv[4] = num iterazioni  */
         // Calcolo e stampo tempo di esecuzione
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
         std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+        r[8] = duration.count();
 
         // Salvo i risultati su data.csv 
             std::ifstream myfile;
@@ -259,19 +267,19 @@ argv[4] = num iterazioni  */
                 std::ofstream myfile;
                 myfile.close();
                 myfile.open ("data.csv",std::ios_base::app);
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency Matrix" << "," << r[2] << "," << r[3] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Csr"              << "," << r[4] << "," << r[5] << "\n" ;
+                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
                 myfile.close();
 
             } else {
                 std::ofstream myfile;
                 myfile.close();
                 myfile.open ("data.csv");
-                myfile << "Number of nodes,Seed,Density (%),Number of Iteration,Data structure,Memory Usage (kB),Duration Dijkstra (µs),\n";
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency Matrix" << "," << r[2] << "," << r[3] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Csr"              << "," << r[4] << "," << r[5] << "\n" ;
+                myfile << "Number of nodes,Seed,Density (%),Number of Iteration,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
+                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
                 myfile.close();
             }
     }
