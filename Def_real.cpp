@@ -1,20 +1,11 @@
 #include "headers.h"
 
-//L'input per il terminal sarà: Number of nodes, Density, Seed
-
-// inizializzo array che conterrà gli output
-// 3 rappresentazioni, 3 valori ciascuna 
-unsigned long r [] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-
 // Funzione utilizzo memoria
 void process_mem_usage(long& vm_usage, long& resident_set, bool diff);
 long vm = 0;
 long rss = 0;
 
-// Funzione dens 
-bool dens(int d) {
-    return rand()%100+1 < d; 
-}
+long r [] = {0,0,0,0,0,0,0,0,0};
 
 // Creo strutture
 typedef std::pair<int, int> Edge; 
@@ -25,7 +16,6 @@ typedef std::pair<int, int> Edge;
 // Creo strutture per Adjacency List
 typedef adjacency_list<listS, vecS, directedS, no_property, property<edge_weight_t, int> > list;
 typedef graph_traits<list>::vertex_descriptor vertex_list;
-
 
 // Creo strutture per Adjacency Matrix
 typedef adjacency_matrix<directedS,no_property, property<edge_weight_t, int> > matrix;    
@@ -43,37 +33,66 @@ typedef graph_traits<csr>::vertex_descriptor vertex_csr;
 int main(int argc, char *argv[]) { 
 /* Cosa passo al main:
 argv[] è un vettore dove:
-argv[1] = num_nodes 
-argv[2] = density 
-argv[3] = seed    
+argv[1] = filename 
+argv[2] = seed
 */ 
 
     // flag per indicare se eseguire o meno Johnson
     bool all_pairs = 0;
-
+    
     // flag per indicare se stampare o meno i risultati di Dijstra (e Johnson)
     bool verbose = 0;
 
+    // flag per indicare se visualizzare o meno il grafo
+    bool visualize = 1;
+
+    // il nome dell file di input è l'unico argomento
+    std::string filename = argv[1];
+
+    std::set<int> nodes;
+
+    std::vector<std::vector<int>> content;
+	std::vector<int> row;
+    std::vector<int> row2;
+	std::string line, word;
+
+    std::fstream file (filename, std::ios::in);
+	if(file.is_open())
+	{
+		while(getline(file, line))
+		{
+			row.clear();
+ 
+			std::stringstream str(line);
+ 
+			while(getline(str, word, ',')){
+				row.push_back(atoi(word.c_str()));
+                nodes.insert(atoi(word.c_str()));
+            }
+			content.push_back(row);
+            row2.push_back(row[1]);
+            row2.push_back(row[0]);
+            content.push_back(row2);
+		}
+	}
+	else
+		std::cout<<"Could not open the file\n";
+
     // fisso numero di nodi 
-    const int num_nodes = atoi(argv[1]);
+    const int num_nodes = nodes.size();
     std::cout << "Number of nodes: " << num_nodes << std::endl;
    
     // fisso il seed 
-    const int seed = atoi(argv[3]); //atoi convert string to integer
+    const int seed = atoi(argv[2]); //atoi convert string to integer
     srand(seed); //srand initialize random number generator
     std::cout << "Seed: " << seed << std::endl;
 
     // Genero edges
     std::vector<Edge> edges_array;
-    const int density = atoi(argv[2]);
-    std::cout << "Density: " << density << "%" << std::endl;
+    
 
-    for(int i=0; i < num_nodes; i++) {
-        for(int j=0; j < num_nodes; j++) {
-             if(dens(density)){
-                    edges_array.push_back(Edge(i,j));
-                }  
-        }
+    for(int i=0; i < content.size(); i++) {
+        edges_array.push_back(Edge(content[i][0],content[i][1]));
     }
 
     const int num_edges = edges_array.size();
@@ -90,7 +109,10 @@ argv[3] = seed
     }
 
     // Genero nodo radice
-    int V = rand()%(num_nodes-2);
+    int V = 0;
+    do{
+        V = rand()%(num_nodes-1);
+    }while(!nodes.count(V));
 
     ////// Adjaceny List
     // Utilizzo Memoria 0  
@@ -239,8 +261,8 @@ argv[3] = seed
         std::cout << std::endl;
     }
     
+    // Johnson (tenuto alla fine per evitare interferenza su memoria rilevata)
     if (all_pairs){
-        // Johnson (tenuto alla fine per evitare interferenza su memoria rilevata)
         // Alloco Distance Matrix
         int **D1 = (int**)malloc(sizeof(int*)*num_nodes);
         for (int i = 0; i < num_nodes; i++) 
@@ -345,25 +367,41 @@ argv[3] = seed
 
     // Salvo i risultati su data.csv 
     std::ifstream myfile;
-    myfile.open("data.csv");
+    myfile.open("data_real.csv");
     if(myfile) {  // controllo se il csv già esiste: se esiste apro in appendice, altrimenti apro (senza appendice) semplicemente e stampo prima riga
         std::ofstream myfile;
         myfile.close();
-        myfile.open ("data.csv",std::ios_base::app);
-        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
-        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
-        myfile << num_nodes << "," << density << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
+        myfile.open ("data_real.csv",std::ios_base::app);
+        myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+        myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+        myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
         myfile.close();
     } else {
         std::ofstream myfile;
         myfile.close();
-        myfile.open ("data.csv");
-        myfile << "Number of nodes,Density (%),Seed,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
-        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
-        myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
-        myfile << num_nodes << "," << density << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
+        myfile.open ("data_real.csv");
+        myfile << "Graph,Number of nodes,Number of edges,Seed,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
+        myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+        myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+        myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
         myfile.close();
     }
+    if (visualize){
+        std::ofstream fout("figs/"+filename+".dot");
+        fout << "digraph A {\n"
+        << "  rankdir=LR\n"
+        << "size=\"5,3\"\n"   // %immagine alta 5 e larga 3 pollici (con gdpi definirò densità pixel)
+        << "ratio=\"fill\"\n"
+        << "edge[style=\"bold\"]\n" << "node[shape=\"circle\"]\n";
+
+        graph_traits < list >::edge_iterator ei, ei_end;
+        for (boost::tie(ei, ei_end) = edges(list_g); ei != ei_end; ++ei)
+            fout << source(*ei, list_g) << " -> " << target(*ei, list_g) 
+            << "[slabel=" << get(edge_weight, list_g)[*ei] << "]\n";
+
+        fout << "}\n";  
+    }
+
     return 0;    
 }
 

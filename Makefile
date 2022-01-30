@@ -10,6 +10,9 @@ Csr:
 Def:
 	g++ Def.cpp -o exeDef -std=c++11
 
+DefReal:
+	g++ Def_real.cpp -o exeDefReal -std=c++11
+
 Test:
 	g++ Test.cpp -o exeTest -std=c++11
 
