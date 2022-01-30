@@ -53,7 +53,6 @@ argv[2] = seed
 
     std::vector<std::vector<int>> content;
 	std::vector<int> row;
-    std::vector<int> row2;
 	std::string line, word;
 
     std::fstream file (filename, std::ios::in);
@@ -70,9 +69,6 @@ argv[2] = seed
                 nodes.insert(atoi(word.c_str()));
             }
 			content.push_back(row);
-            row2.push_back(row[1]);
-            row2.push_back(row[0]);
-            content.push_back(row2);
 		}
 	}
 	else
@@ -93,6 +89,7 @@ argv[2] = seed
 
     for(int i=0; i < content.size(); i++) {
         edges_array.push_back(Edge(content[i][0],content[i][1]));
+        edges_array.push_back(Edge(content[i][1],content[i][0]));
     }
 
     const int num_edges = edges_array.size();
@@ -390,7 +387,7 @@ argv[2] = seed
         std::ofstream fout("figs/"+filename+".dot");
         fout << "digraph A {\n"
         << "  rankdir=LR\n"
-        << "size=\"5,3\"\n"   // %immagine alta 5 e larga 3 pollici (con gdpi definirò densità pixel)
+        << "size=\"15,10\"\n"   // %immagine alta 5 e larga 3 pollici (con gdpi definirò densità pixel)
         << "ratio=\"fill\"\n"
         << "edge[style=\"bold\"]\n" << "node[shape=\"circle\"]\n";
 

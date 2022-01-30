@@ -1,0 +1,4 @@
+Graph,Number of nodes,Number of edges,Seed,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),
+facebook_combined.csv,4039,176468,42,Adjacency List,13056,46294,0
+facebook_combined.csv,4039,176468,42,Adjacency Matrix,191192,1261229,0
+facebook_combined.csv,4039,176468,42,Csr,3384,44413,0
