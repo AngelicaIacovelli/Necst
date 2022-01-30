@@ -1,16 +1,15 @@
 #include "headers.h"
 
-//L'input per il terminal sarà: Number of nodes, Density, Seed, Num Iterazioni.
+//L'input per il terminal sarà: Number of nodes, Density, Seed
 
 // inizializzo array che conterrà gli output
-unsigned long r [] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-// std::vector<double> results;
+// 3 rappresentazioni, 3 valori ciascuna 
+unsigned long r [] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; 
 
 // Funzione utilizzo memoria
-void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
-unsigned long vm;
-unsigned long rss = 0;
+void process_mem_usage(long& vm_usage, long& resident_set, bool diff);
+long vm = 0;
+long rss = 0;
 
 // Funzione dens 
 bool dens(int d) {
@@ -47,19 +46,18 @@ argv[] è un vettore dove:
 argv[1] = num_nodes 
 argv[2] = density 
 argv[3] = seed    
-argv[4] = num iterazioni  */ 
+*/ 
 
-
-// fisso numero di nodi 
+    // fisso numero di nodi 
     const int num_nodes = atoi(argv[1]);
     std::cout << "Number of nodes: " << num_nodes << std::endl;
    
-// fisso il seed 
+    // fisso il seed 
     const int seed = atoi(argv[3]); //atoi convert string to integer
     srand(seed); //srand initialize random number generator
     std::cout << "Seed: " << seed << std::endl;
 
-// Genero edges
+    // Genero edges
     std::vector<Edge> edges_array;
     const int density = atoi(argv[2]);
     std::cout << "Density: " << density << "%" << std::endl;
@@ -74,11 +72,7 @@ argv[4] = num iterazioni  */
 
     const int num_edges = edges_array.size();
 
-// Fisso numero di iterazioni 
-    const int num_it= atoi(argv[4]);
-    std::cout << "Number of iterations: " << num_it << std::endl;
-
-// Genero weights
+    // Genero weights
     int *weights = (int*)malloc(sizeof(int)*num_edges);
     std::vector<CsrWeight> weights2;
     CsrWeight random;
@@ -89,211 +83,192 @@ argv[4] = num iterazioni  */
         weights[i] = random.w;                
     }
 
-// Genero nodo radice
+    // Genero nodo radice
     int V = rand()%(num_nodes-2);
 
-    for(int I=0; I < num_it; I++) {  // Ripeto i comandi N volte ( N = num_it = numero di iterazioni richieste)
-        int iteration_counter = I + 1;
-
-        // Utilizzo Memoria 0  
-        process_mem_usage(vm, rss, 0);
+    ////// Adjaceny List
+    // Utilizzo Memoria 0  
+    process_mem_usage(vm, rss, 0);
 
     // Creo Grafo (Adjacency List)
-        list list_g(edges_array.begin(), edges_array.end(), weights, num_nodes);
+    list list_g(edges_array.begin(), edges_array.end(), weights, num_nodes);
 
-        // Utilizzo Memoria 1
-        process_mem_usage(vm, rss, 1);
-        std::cout << std::fixed << "Adjacency List -> Memory usage: " << rss << " kB" << std::endl;
-        r[0] = rss;
-        
-        std::vector< vertex_list > list_p(num_vertices(list_g));
-        std::vector< int > list_d(num_vertices(list_g));
-        vertex_list list_s = vertex(V, list_g);
+    // Utilizzo Memoria 1
+    process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Adjacency List -> Memory usage: " << vm << " kB" << std::endl;
+    r[0] = rss;
+    
+    std::vector< vertex_list > list_p(num_vertices(list_g));
+    std::vector< int > list_d(num_vertices(list_g));
+    vertex_list list_s = vertex(V, list_g);
 
     // dijkstra algorithm for list graph   
-        
-        auto start = std::chrono::high_resolution_clock::now();
-
-        dijkstra_shortest_paths_no_color_map(list_g, list_s,
-            predecessor_map(make_iterator_property_map(
-                                list_p.begin(), get(vertex_index, list_g)))
-            .distance_map(make_iterator_property_map(
-                    list_d.begin(), get(vertex_index, list_g))));
-
-        auto stop = std::chrono::high_resolution_clock::now();
-
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-        std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[1] = duration.count();
     
-    // Johnson
-        // Alloco Distance Matrix
-        int **D1 = (int**)malloc(sizeof(int*)*num_nodes);
-        for (int i = 0; i < num_nodes; i++) 
-            D1[i] = (int*)malloc(sizeof(int)*num_nodes);
-        
-        // Avvio misurazione tempo
-        start = std::chrono::high_resolution_clock::now();   
+    auto start = std::chrono::high_resolution_clock::now();
 
-        // Eseguo Johnson
-        johnson_all_pairs_shortest_paths(list_g, D1);
+    dijkstra_shortest_paths_no_color_map(list_g, list_s,
+        predecessor_map(make_iterator_property_map(
+                            list_p.begin(), get(vertex_index, list_g)))
+        .distance_map(make_iterator_property_map(
+                list_d.begin(), get(vertex_index, list_g))));
 
-        // Stop tempo
-        stop = std::chrono::high_resolution_clock::now();
+    auto stop = std::chrono::high_resolution_clock::now();
 
-        // Calcolo e stampo tempo di esecuzione
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-        std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[2] = duration.count();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    r[1] = duration.count();
 
+
+    ////// Adjaceny Matrix
     // Utilizzo Memoria 0  
-        process_mem_usage(vm, rss, 0);
+    process_mem_usage(vm, rss, 0);
 
     // Creo Grafo (Adjacency Matrix)
-        matrix matrix_g(edges_array.begin(), edges_array.end(), weights, num_nodes);
+    matrix matrix_g(edges_array.begin(), edges_array.end(), weights, num_nodes);
 
-        // Utilizzo Memoria 1 
-        process_mem_usage(vm, rss, 1);
-        std::cout << std::fixed << "Adjacency Matrix -> Memory usage: " << rss << " kB" << std::endl;
-        r[3] = rss;
-        
-        std::vector< vertex_matrix > matrix_p(num_vertices(matrix_g));
-        std::vector< int > matrix_d(num_vertices(matrix_g));
+    // Utilizzo Memoria 1 
+    process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Adjacency Matrix -> Memory usage: " << vm << " kB" << std::endl;
+    r[3] = rss;
+    
+    std::vector< vertex_matrix > matrix_p(num_vertices(matrix_g));
+    std::vector< int > matrix_d(num_vertices(matrix_g));
 
-        vertex_matrix matrix_s = vertex(V, matrix_g);
+    vertex_matrix matrix_s = vertex(V, matrix_g);
 
     // Dijkstra
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();    
 
-        // Avvio misurazione tempo
-        start = std::chrono::high_resolution_clock::now();    
+    dijkstra_shortest_paths_no_color_map(matrix_g, matrix_s,
+        predecessor_map(make_iterator_property_map(
+                            matrix_p.begin(), get(vertex_index, matrix_g)))
+        .distance_map(make_iterator_property_map(
+                matrix_d.begin(), get(vertex_index, matrix_g))));
 
-        dijkstra_shortest_paths_no_color_map(matrix_g, matrix_s,
-            predecessor_map(make_iterator_property_map(
-                                matrix_p.begin(), get(vertex_index, matrix_g)))
-            .distance_map(make_iterator_property_map(
-                    matrix_d.begin(), get(vertex_index, matrix_g))));
+    // Stop Tempo
+    stop = std::chrono::high_resolution_clock::now();
 
-        // Stop Tempo
-        stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    r[4] = duration.count();
 
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-        std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[4] = duration.count();
-        
-    // Johnson
-        // Alloco Distance Matrix
-        // int **D2 = (int**)malloc(sizeof(int*)*num_nodes);
-        // for (int i = 0; i < num_nodes; i++) 
-        //     D2[i] = (int*)malloc(sizeof(int)*num_nodes);
-        
-        // Avvio misurazione tempo
-        start = std::chrono::high_resolution_clock::now();   
 
-        // Eseguo Johnson
-        johnson_all_pairs_shortest_paths(matrix_g, D1);
-
-        // Stop tempo
-        stop = std::chrono::high_resolution_clock::now();
-
-        // Calcolo e stampo tempo di esecuzione
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-        std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[5] = duration.count();
-
+    ////// Compressed Sparse Row
     // Utilizzo Memoria 0  
-        process_mem_usage(vm, rss, 0);
+    process_mem_usage(vm, rss, 0);
 
     // Creo Grafo (Csr)
-        csr csr_g(edges_are_unsorted, edges_array.begin(), edges_array.end(), weights2.begin(), num_nodes);
+    csr csr_g(edges_are_unsorted, edges_array.begin(), edges_array.end(), weights2.begin(), num_nodes);
 
-        // Utilizzo memoria 1
-        process_mem_usage(vm, rss, 1);
-        std::cout << std::fixed << "Csr -> Memory usage: " << rss << " kB" << std::endl;
-        r[6] = rss;
+    // Utilizzo memoria 1
+    process_mem_usage(vm, rss, 1);
+    std::cout << std::fixed << "Csr -> Memory usage: " << vm << " kB" << std::endl;
+    r[6] = rss;
 
-        std::vector< vertex_csr > csr_p(num_vertices(csr_g));
-        std::vector< int > csr_d(num_vertices(csr_g));
-        vertex_csr csr_s = vertex(V, csr_g);
+    std::vector< vertex_csr > csr_p(num_vertices(csr_g));
+    std::vector< int > csr_d(num_vertices(csr_g));
+    vertex_csr csr_s = vertex(V, csr_g);
 
     // Dijkstra 
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();    
 
-        // Avvio misurazione tempo
-        start = std::chrono::high_resolution_clock::now();    
+    dijkstra_shortest_paths_no_color_map(csr_g, csr_s,
+        predecessor_map(make_iterator_property_map(
+                            csr_p.begin(), get(boost::vertex_index, csr_g))).
+        distance_map(make_iterator_property_map(
+                csr_d.begin(), get(vertex_index, csr_g))).
+        weight_map(boost::get(&CsrWeight::w, csr_g)));
 
-        dijkstra_shortest_paths_no_color_map(csr_g, csr_s,
-            predecessor_map(make_iterator_property_map(
-                                csr_p.begin(), get(boost::vertex_index, csr_g))).
-            distance_map(make_iterator_property_map(
-                    csr_d.begin(), get(vertex_index, csr_g))).
-            weight_map(boost::get(&CsrWeight::w, csr_g))
-            );
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
 
-        // Stop tempo
-        stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    r[7] = duration.count();
+    
+    
+    // Johnson (tenuto alla fine per evitare interferenza su memoria rilevata)
+    // Alloco Distance Matrix
+    int **D1 = (int**)malloc(sizeof(int*)*num_nodes);
+    for (int i = 0; i < num_nodes; i++) 
+        D1[i] = (int*)malloc(sizeof(int)*num_nodes);
+    
+    ////// Adjaceny List
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();   
+    // Eseguo Johnson
+    johnson_all_pairs_shortest_paths(list_g, D1);
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
+    // Calcolo e stampo tempo di esecuzione
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Johnson (List): " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    r[2] = duration.count();
+    
+    ////// Adjaceny Matrix
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();   
+    // Eseguo Johnson
+    johnson_all_pairs_shortest_paths(matrix_g, D1);
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
+    // Calcolo e stampo tempo di esecuzione
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Johnson (Matrix): " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    r[5] = duration.count();
 
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-        std::cout << "Duration Dijkstra: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[7] = duration.count();
+    ////// CSR
+    // Avvio misurazione tempo
+    start = std::chrono::high_resolution_clock::now();   
+    // Eseguo Johnson
+    johnson_all_pairs_shortest_paths(csr_g, D1, 
+        predecessor_map(make_iterator_property_map(
+                csr_p.begin(), get(boost::vertex_index, csr_g))).
+        distance_map(make_iterator_property_map(
+                csr_d.begin(), get(boost::vertex_index, csr_g))).
+        weight_map(boost::get(&CsrWeight::w, csr_g)));
+    // Stop tempo
+    stop = std::chrono::high_resolution_clock::now();
+    // Calcolo e stampo tempo di esecuzione
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
+    std::cout << "Duration Johnson (CSR): " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
+    r[8] = duration.count();
 
-    // Johnson
-        // Alloco Distance Matrix
-        // int **D3 = (int**)malloc(sizeof(int*)*num_nodes);
-        // for (int i = 0; i < num_nodes; i++) 
-        //     D3[i] = (int*)malloc(sizeof(int)*num_nodes);
-        
-        // Avvio misurazione tempo
-        start = std::chrono::high_resolution_clock::now();   
 
-        // Eseguo Johnson
-        johnson_all_pairs_shortest_paths(csr_g, D1, 
-            predecessor_map(make_iterator_property_map(
-                    csr_p.begin(), get(boost::vertex_index, csr_g))).
-            distance_map(make_iterator_property_map(
-                    csr_d.begin(), get(boost::vertex_index, csr_g))).
-            weight_map(boost::get(&CsrWeight::w, csr_g)));
+    // Salvo i risultati su data.csv 
+    std::ifstream myfile;
+    myfile.open("data.csv");
+    if(myfile) {  // controllo se il csv già esiste: se esiste apro in appendice, altrimenti apro (senza appendice) semplicemente e stampo prima riga
+        std::ofstream myfile;
+        myfile.close();
+        myfile.open ("data.csv",std::ios_base::app);
+        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+        myfile << num_nodes << "," << seed << "," << density << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
+        myfile.close();
 
-        // Stop tempo
-        stop = std::chrono::high_resolution_clock::now();
-
-        // Calcolo e stampo tempo di esecuzione
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);  
-        std::cout << "Duration Johnson: " << duration.count() << "\u00B5s" << std::endl; // \u00B5s : Character 'MICRO SIGN'
-        r[8] = duration.count();
-
-        // Salvo i risultati su data.csv 
-            std::ifstream myfile;
-            myfile.open("data.csv");
-            if(myfile) {  // controllo se il csv già esiste: se esiste apro in appendice, altrimenti apro (senza appendice) semplicemente e stampo prima riga
-                std::ofstream myfile;
-                myfile.close();
-                myfile.open ("data.csv",std::ios_base::app);
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
-                myfile.close();
-
-            } else {
-                std::ofstream myfile;
-                myfile.close();
-                myfile.open ("data.csv");
-                myfile << "Number of nodes,Seed,Density (%),Number of Iteration,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
-                myfile << num_nodes << "," << seed << "," << density << "," << iteration_counter << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
-                myfile.close();
-            }
+    } else {
+        std::ofstream myfile;
+        myfile.close();
+        myfile.open ("data.csv");
+        myfile << "Number of nodes,Seed,Density (%),Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
+        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
+        myfile << num_nodes << "," << seed << "," << density << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
+        myfile << num_nodes << "," << seed << "," << density << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
+        myfile.close();
     }
+    
 
     return 0;    
 
 }
 
-void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff)
-{ 
-    vm_usage = 0;
-  
-    unsigned long vsize;
-    unsigned long rss;
+void process_mem_usage(long& vm_usage, long& resident_set, bool diff)
+{   
+    long vsize;
+    long rss;
     {
         std::string ignore;
         std::ifstream ifs("/proc/self/stat", std::ios_base::in);
@@ -303,12 +278,13 @@ void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, boo
     }
 
     long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; 
-    vm_usage = vsize / 1024.0;
     if(diff == 0){  
         resident_set = rss * page_size_kb;
+        vm_usage = vsize / 1024;
     }
     else{  
         resident_set = (rss * page_size_kb) - resident_set;
+        vm_usage = (vsize / 1024) - vm_usage;
     }
 }
 
