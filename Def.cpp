@@ -357,7 +357,7 @@ argv[3] = seed
     } else {
         std::ofstream myfile;
         myfile.close();
-        myfile.open ("data.csv");
+        myfile.open ("results.csv");
         myfile << "Number of nodes,Density (%),Seed,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
         myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
         myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
