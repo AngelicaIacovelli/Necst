@@ -345,11 +345,11 @@ argv[3] = seed
 
     // Salvo i risultati su data.csv 
     std::ifstream myfile;
-    myfile.open("data.csv");
+    myfile.open("results.csv");
     if(myfile) {  // controllo se il csv già esiste: se esiste apro in appendice, altrimenti apro (senza appendice) semplicemente e stampo prima riga
         std::ofstream myfile;
         myfile.close();
-        myfile.open ("data.csv",std::ios_base::app);
+        myfile.open ("results.csv",std::ios_base::app);
         myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
         myfile << num_nodes << "," << density << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
         myfile << num_nodes << "," << density << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
