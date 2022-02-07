@@ -1,1 +1,9 @@
-evaluate.sh: line 13: ./exeDef: No such file or directory
+Number of nodes: 1000
+Seed: 13
+Density: 5%
+Adjacency List -> Memory usage: 2904 kB
+Duration Dijkstra: 9163µs
+Adjacency Matrix -> Memory usage: 11720 kB
+Duration Dijkstra: 80008µs
+Csr -> Memory usage: 488 kB
+Duration Dijkstra: 8745µs

@@ -1,0 +1,9 @@
+Number of nodes: 2000
+Seed: 13
+Density: 5%
+Adjacency List -> Memory usage: 11484 kB
+Duration Dijkstra: 32977µs
+Adjacency Matrix -> Memory usage: 46876 kB
+Duration Dijkstra: 346453µs
+Csr -> Memory usage: 1940 kB
+Duration Dijkstra: 32479µs
