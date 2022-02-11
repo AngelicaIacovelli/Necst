@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 argv[] è un vettore dove:
 argv[1] = filename 
 argv[2] = seed
+argv[3] = D or U
 */ 
 
     // flag per indicare se eseguire o meno Johnson
@@ -89,7 +90,8 @@ argv[2] = seed
 
     for(int i=0; i < content.size(); i++) {
         edges_array.push_back(Edge(content[i][0],content[i][1]));
-        edges_array.push_back(Edge(content[i][1],content[i][0])); // Va rimossa quando ho grafo direzionato 
+        if (argv[3][0]=='U')
+            edges_array.push_back(Edge(content[i][1],content[i][0])); // Va rimossa quando ho grafo direzionato 
     }
 
     const int num_edges = edges_array.size();
