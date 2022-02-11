@@ -89,7 +89,7 @@ argv[2] = seed
 
     for(int i=0; i < content.size(); i++) {
         edges_array.push_back(Edge(content[i][0],content[i][1]));
-        edges_array.push_back(Edge(content[i][1],content[i][0]));
+        edges_array.push_back(Edge(content[i][1],content[i][0])); // Va rimossa quando ho grafo direzionato 
     }
 
     const int num_edges = edges_array.size();
