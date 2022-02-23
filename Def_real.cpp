@@ -1,9 +1,9 @@
 #include "headers.h"
 
 // Funzione utilizzo memoria
-void process_mem_usage(long& vm_usage, long& resident_set, bool diff);
-long vm = 0;
-long rss = 0;
+void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
+unsigned long vm = 0;
+unsigned long rss = 0;
 
 long r [] = {0,0,0,0,0,0,0,0,0};
 
@@ -45,7 +45,7 @@ argv[3] = D or U
     bool verbose = 0;
 
     // flag per indicare se visualizzare o meno il grafo
-    bool visualize = 1;
+    bool visualize = 0;
 
     // il nome dell file di input è l'unico argomento
     std::string filename = argv[1];
@@ -363,22 +363,22 @@ argv[3] = D or U
         }
     }
 
+    free(weights);
 
-    // Salvo i risultati su data.csv 
-    std::ifstream myfile;
-    myfile.open("data_real.csv");
-    if(myfile) {  // controllo se il csv già esiste: se esiste apro in appendice, altrimenti apro (senza appendice) semplicemente e stampo prima riga
-        std::ofstream myfile;
-        myfile.close();
-        myfile.open ("data_real.csv",std::ios_base::app);
+    // Salvo i risultati su results_real.csv 
+    std::ifstream infile;
+    infile.open("results_real.csv");
+    std::ofstream myfile;
+    if(infile) {  // controllo se il csv già esiste: se esiste apro in appendice, altrimenti apro (senza appendice) semplicemente e stampo prima riga
+        infile.close();
+        myfile.open ("results_real.csv",std::ios_base::app);
         myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
         myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
         myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Csr"              << "," << r[6] << "," << r[7] << "," << r[8] << "\n" ;
         myfile.close();
     } else {
-        std::ofstream myfile;
-        myfile.close();
-        myfile.open ("data_real.csv");
+        infile.close();
+        myfile.open ("results_real.csv");
         myfile << "Graph,Number of nodes,Number of edges,Seed,Data structure,Memory Usage (kB),Duration Dijkstra (µs),Duration Johnson (µs),\n";
         myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency List"   << "," << r[0] << "," << r[1] << "," << r[2] << "\n" ;
         myfile << filename << "," << num_nodes << "," << num_edges << "," << seed << "," << "Adjacency Matrix" << "," << r[3] << "," << r[4] << "," << r[5] << "\n" ;
@@ -405,10 +405,10 @@ argv[3] = D or U
 }
 
 
-void process_mem_usage(long& vm_usage, long& resident_set, bool diff)
+void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff)
 {   
-    long vsize;
-    long rss;
+    unsigned long vsize;
+    unsigned long rss;
     {
         std::string ignore;
         std::ifstream ifs("/proc/self/stat", std::ios_base::in);
@@ -417,7 +417,7 @@ void process_mem_usage(long& vm_usage, long& resident_set, bool diff)
                 >> ignore >> ignore >> vsize >> rss;
     }
 
-    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; 
+    unsigned long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; 
     if(diff == 0){  
         resident_set = rss * page_size_kb;
         vm_usage = vsize / 1024;
