@@ -7,9 +7,9 @@
 unsigned long r [] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; 
 
 // Funzione utilizzo memoria
-void process_mem_usage(long& vm_usage, long& resident_set, bool diff);
-long vm = 0;
-long rss = 0;
+void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff);
+unsigned long vm = 0;
+unsigned long rss = 0;
 
 // Funzione dens 
 bool dens(int d) {
@@ -72,7 +72,7 @@ argv[3] = seed
         for(int j=0; j < num_nodes; j++) {
              if(dens(density)){
                     edges_array.push_back(Edge(i,j));
-                }  
+            }  
         }
     }
 
@@ -342,6 +342,8 @@ argv[3] = seed
         }
     }
 
+    free(weights);
+
 
     // Salvo i risultati su data.csv 
     std::ifstream myfile;
@@ -368,10 +370,10 @@ argv[3] = seed
 }
 
 
-void process_mem_usage(long& vm_usage, long& resident_set, bool diff)
+void process_mem_usage(unsigned long& vm_usage, unsigned long& resident_set, bool diff)
 {   
-    long vsize;
-    long rss;
+    unsigned long vsize;
+    unsigned long rss;
     {
         std::string ignore;
         std::ifstream ifs("/proc/self/stat", std::ios_base::in);
@@ -380,7 +382,7 @@ void process_mem_usage(long& vm_usage, long& resident_set, bool diff)
                 >> ignore >> ignore >> vsize >> rss;
     }
 
-    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; 
+    unsigned long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; 
     if(diff == 0){  
         resident_set = rss * page_size_kb;
         vm_usage = vsize / 1024;
