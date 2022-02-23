@@ -36,6 +36,7 @@ argv[] è un vettore dove:
 argv[1] = filename 
 argv[2] = seed
 argv[3] = D or U
+argv[4] = separator char
 */ 
 
     // flag per indicare se eseguire o meno Johnson
@@ -49,6 +50,7 @@ argv[3] = D or U
 
     // il nome dell file di input è l'unico argomento
     std::string filename = argv[1];
+    char sep = argv[4][0];
 
     std::set<int> nodes;
 
@@ -65,7 +67,7 @@ argv[3] = D or U
  
 			std::stringstream str(line);
  
-			while(getline(str, word, ',')){
+			while(getline(str, word, sep)){
 				row.push_back(atoi(word.c_str()));
                 nodes.insert(atoi(word.c_str()));
             }
