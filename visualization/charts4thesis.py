@@ -12,7 +12,9 @@ from plot_utils import *
 
 PALETTE = [COLORS["peach2"], COLORS["g1"]]
 PALETTE_B = [COLORS["b3"], COLORS["b3"]]
-PALETTE_GW = [COLORS[r] for r in ["gw3","gw2","gw1"]]
+PALETTE_GW1 = [COLORS[r] for r in ["gw3","gw2","gw1"]]
+PALETTE_GW2 = [COLORS[r] for r in ["b1","b3","b5"]]
+PALETTE_GW = [PALETTE_GW1, PALETTE_GW2]
 HATCHES = ['', '/'*4, '\\'*4]
 
 data = pd.read_csv("../results.csv", sep=',')
@@ -29,13 +31,13 @@ plt.rcParams['ps.fonttype'] = 42
 ylabels = {'Memory Usage (kB)':"Memory Usage (kB)", "Duration Dijkstra (µs)":"Dijkstra Execution Time [µs]"}
 # ylims = {'Wall_train': [(0,10000),(0,10000),(0,80000)], 'Peak_RAM':[(0,500)]*3, 'CPU_train':[(0,140000),(0,140000),(0,1800000)], 'Peak_RAM_load_graph':[(0,500)]*3}
 conf = ['Adjacency Matrix', 'Adjacency List', 'Csr']
-for var in ["Memory Usage (kB)","Duration Dijkstra (µs)"]: 
+for i, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]): 
     g = sns.catplot(data=data, kind='point', ci=99, x="Density (%)",
     #g = sns.catplot(data=data, kind='point', ci=99, x="Number of nodes",
     y=var, hue='Data structure', hue_order=conf, 
     row='Number of nodes', row_order=[1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000],
     #row='Density (%)', row_order=[20, 40, 60, 80, 100], 
-    alpha=1, palette=PALETTE_GW, height=3, aspect=5, legend_out=False, 
+    alpha=1, palette=PALETTE_GW[i], height=3, aspect=5, legend_out=False, 
     sharey=False, sharex=False, margin_titles=True)
     g.set_axis_labels("Density (%)", ylabels[var])
     #g.despine(left=True)
