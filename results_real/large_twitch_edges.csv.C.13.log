@@ -1,0 +1,5 @@
+Number of nodes: 168114
+Seed: 13
+Number of edges: 13595114
+Csr -> Memory usage: 159320 kB
+Duration Dijkstra: 3907264µs

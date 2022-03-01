@@ -35,3 +35,15 @@ twitter_combined.csv,81306,2420766,13,Csr,37804,724503,0
 twitter_combined.csv,81306,2420766,135,Adjacency List,25586960,54520109,0
 twitter_combined.csv,81306,2420766,135,Adjacency Matrix,77468836,495002530,0
 twitter_combined.csv,81306,2420766,135,Csr,38128,713106,0
+large_twitch_edges.csv,168114,13595114,42,Adjacency List,1034668,6289636,0
+large_twitch_edges.csv,168114,13595114,42,Adjacency Matrix,331198412,2112586942,0
+large_twitch_edges.csv,168114,13595114,42,Csr,159404,3617107,0
+large_twitch_edges.csv,168114,13595114,420,Adjacency List,1034728,6087408,0
+large_twitch_edges.csv,168114,13595114,420,Adjacency Matrix,331199220,2113073566,0
+large_twitch_edges.csv,168114,13595114,420,Csr,159404,3731638,0
+large_twitch_edges.csv,168114,13595114,13,Adjacency List,1034728,6292423,0
+large_twitch_edges.csv,168114,13595114,13,Adjacency Matrix,331199220,2119397891,0
+large_twitch_edges.csv,168114,13595114,13,Csr,159472,3907264,0
+large_twitch_edges.csv,168114,13595114,135,Adjacency List,1034728,6861782,0
+large_twitch_edges.csv,168114,13595114,135,Adjacency Matrix,331199144,2110919458,0
+large_twitch_edges.csv,168114,13595114,135,Csr,159468,4048371,0

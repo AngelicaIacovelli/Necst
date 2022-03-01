@@ -1,0 +1,5 @@
+Number of nodes: 168114
+Seed: 420
+Number of edges: 13595114
+Adjacency List -> Memory usage: 1034484 kB
+Duration Dijkstra: 6087408µs

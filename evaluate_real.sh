@@ -1,7 +1,7 @@
 printf "Starting shortest path evalutation on real graphs\n"
-Graphs=("facebook_combined.csv") # "twitter_combined.csv")
-Separators=("," ",")
-Graph_Types=("U" "D")
+Graphs=("large_twitch_edges.csv") # "facebook_combined.csv" "twitter_combined.csv")
+Separators=("," "," ",")
+Graph_Types=("U" "U" "D")
 Seeds=("42" "420" "13" "135")
 DataStruct=("L" "M" "C")
 ((i=${#Graphs[@]}*${#Seeds[@]}*${#DataStruct[@]}))
