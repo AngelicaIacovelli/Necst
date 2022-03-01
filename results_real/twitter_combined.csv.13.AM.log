@@ -1,0 +1,6 @@
+Number of nodes: 81306
+Number of new nodes: 81306
+Seed: 13
+Number of edges: 2420766
+Adjacency Matrix -> Memory usage: 77468740 kB
+Duration Dijkstra: 530046280µs

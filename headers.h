@@ -11,6 +11,7 @@
 //#include <bits/stdc++.h>
 #include <string>
 #include <sstream>
+#include <map>
 
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>

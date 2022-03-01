@@ -23,3 +23,15 @@ facebook_combined.csv,4039,176468,13,Csr,3432,42629,0
 facebook_combined.csv,4039,176468,135,Adjacency List,13056,46196,0
 facebook_combined.csv,4039,176468,135,Adjacency Matrix,191192,1207855,0
 facebook_combined.csv,4039,176468,135,Csr,3432,43762,0
+twitter_combined.csv,81306,2420766,42,Adjacency List,25586960,54164311,0
+twitter_combined.csv,81306,2420766,42,Adjacency Matrix,77468900,561670014,0
+twitter_combined.csv,81306,2420766,42,Csr,37868,700636,0
+twitter_combined.csv,81306,2420766,420,Adjacency List,25586960,54319589,0
+twitter_combined.csv,81306,2420766,420,Adjacency Matrix,77468804,478104319,0
+twitter_combined.csv,81306,2420766,420,Csr,37868,698798,0
+twitter_combined.csv,81306,2420766,13,Adjacency List,25586960,54187056,0
+twitter_combined.csv,81306,2420766,13,Adjacency Matrix,77468904,530046280,0
+twitter_combined.csv,81306,2420766,13,Csr,37804,724503,0
+twitter_combined.csv,81306,2420766,135,Adjacency List,25586960,54520109,0
+twitter_combined.csv,81306,2420766,135,Adjacency Matrix,77468836,495002530,0
+twitter_combined.csv,81306,2420766,135,Csr,38128,713106,0
