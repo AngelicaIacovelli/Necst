@@ -17,9 +17,13 @@ PALETTE_GW2 = [COLORS[r] for r in ["blue_klein","bt1","b5"]]
 PALETTE_GW = [PALETTE_GW1, PALETTE_GW2]
 HATCHES = ['', '/'*4, '\\'*4]
 
-data = pd.read_csv("../results.csv", sep=',')
-data = data[data['Number of nodes']<=32000]
+data = pd.read_csv("../results_real.csv", sep=',')
 data.rename(columns={'Number of nodes':'# Nodes'}, inplace=True)
+FACE = data['Graph'] == 'facebook_combined.csv'
+TWIT = data['Graph'] == 'twitter_combined.csv'
+data.loc[FACE, 'Graph'] = 'Facebook'
+data.loc[TWIT, 'Graph'] = 'Twitter'
+
 # sns.set_theme(style="whitegrid")
 sns.set_style("whitegrid", {"ytick.left": True})
 plt.rcParams["font.family"] = ["serif"]
@@ -33,14 +37,11 @@ ylabels = {'Memory Usage (kB)':"RAM Usage (kB)", "Duration Dijkstra (µs)":"Run 
 # ylims = {'Wall_train': [(0,10000),(0,10000),(0,80000)], 'Peak_RAM':[(0,500)]*3, 'CPU_train':[(0,140000),(0,140000),(0,1800000)], 'Peak_RAM_load_graph':[(0,500)]*3}
 conf = ['Adjacency Matrix', 'Adjacency List', 'Csr']
 for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]): 
-    g = sns.catplot(data=data, kind='point', ci=99, x="Density (%)",
-    # g = sns.catplot(data=data, kind='point', ci=99, x="# Nodes",
-    y=var, hue='Data structure', hue_order=conf, 
-    row='# Nodes', row_order=[1000, 2000, 4000, 8000, 16000, 32000], #, 64000, 128000]
-    # row='Density (%)', row_order=[20, 40, 60, 80, 100], 
-    alpha=1, palette=PALETTE_GW[k], height=3, aspect=5, legend_out=False, 
+    g = sns.catplot(data=data, kind='bar', ci=99, x="# Nodes",
+    y=var, col='Graph', hue='Data structure', hue_order=conf, 
+    alpha=1, palette=PALETTE_GW[k], height=8, aspect=1.5, legend_out=False, 
     sharey=False, sharex=False, margin_titles=True)
-    g.set_axis_labels("Density (%)", ylabels[var])
+    # g.set_axis_labels("Density (%)", ylabels[var])
     # g.set_axis_labels("# Nodes", ylabels[var])
     #g.despine(left=True)
     #  .set_titles("{col_name}")
@@ -57,18 +58,18 @@ for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]):
             # plt.yticks(a)
             # if ii!=0:
             #     plt.yticks(a, ['']*5)
-            g.set_axis_labels("Density (%)", ylabels[var])
+#            g.set_axis_labels("Density (%)", ylabels[var])
             # g.set_axis_labels("# Nodes", ylabels[var])
-            # for j, bar in enumerate(ax.patches):
-            #     bar.set_hatch(HATCHES[(j%15)//5])
-            #     bar.set_edgecolor('k')
+            for j, bar in enumerate(ax.patches):
+                bar.set_hatch(HATCHES[(j%15)//5])
+                bar.set_edgecolor('k')
                 
-            # for j, bar in enumerate([p for p in ax.patches if not pd.isna(p)]):
-            #     bar.set_hatch(HATCHES[j // len(axes)])
+            for j, bar in enumerate([p for p in ax.patches if not pd.isna(p)]):
+                bar.set_hatch(HATCHES[j // len(axes)])
     #     ax.yaxis.set_minor_locator(tkr.LogLocator(base=10, subs='all'))
     #     ax.yaxis.set_minor_formatter(tkr.NullFormatter())
     # if var == 'Wall_train':
-    #     g.set(yscale='log')
+    g.set(yscale='log')
         
     # Add legend;
     # g.legend.remove()  # Remove the existing legend again;
@@ -77,12 +78,12 @@ for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]):
                     Patch(facecolor=PALETTE_GW[k][2], edgecolor="k", label=conf[2])] 
                     
     legend_data = {a:b for a,b in zip(conf,custom_lines)}
-    g.add_legend(legend_data, conf, loc="lower center", bbox_to_anchor=(0.50, 0.98), fontsize=18, ncol=1, handletextpad=0.2, columnspacing=0.5, fancybox=True)
+    g.add_legend(legend_data, conf, loc="upper center", bbox_to_anchor=(0.99, 0.98), fontsize=18, ncol=1, handletextpad=0.2, columnspacing=0.5, fancybox=True)
     g.legend.set_title("Graph Data Structure")
     # leg._legend_box.align = "left"
     g.legend.get_frame().set_facecolor('white')
-    plt.subplots_adjust(left=0.1, bottom=0.065, right=0.94, top=0.88, hspace=0.75, wspace=0.20)
+    plt.subplots_adjust(left=0.1, bottom=0.1, right=0.94, top=0.88, hspace=0.75, wspace=0.20)
     # plt.savefig(f"Total{var}_Nodes.pdf")
-    plt.savefig(f"Total{var}_Density.pdf")
+    plt.savefig(f"Total{var}_Real.pdf")
     # plt.show()
 
