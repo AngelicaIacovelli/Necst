@@ -15,6 +15,7 @@ for k in ${!Graphs[@]}; do
             ./exeDefReal ${Graphs[$k]} ${Separators[$k]} ${Graph_Types[$k]} $datastruct $seed &> results_real/${Graphs[$k]}.$datastruct.$seed.log
             ((j+=1))
             printf "\nDone\n"
+        done
     done
 done
 
