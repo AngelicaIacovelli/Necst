@@ -20,9 +20,11 @@ HATCHES = ['', '/'*4, '\\'*4]
 data = pd.read_csv("../results_real.csv", sep=',')
 data.rename(columns={'Number of nodes':'# Nodes'}, inplace=True)
 FACE = data['Graph'] == 'facebook_combined.csv'
-TWIT = data['Graph'] == 'twitter_combined.csv'
+TWITTER = data['Graph'] == 'twitter_combined.csv'
+TWITCH = data['Graph'] == 'large_twitch_edges.csv'
 data.loc[FACE, 'Graph'] = 'Facebook'
-data.loc[TWIT, 'Graph'] = 'Twitter'
+data.loc[TWITTER, 'Graph'] = 'Twitter'
+data.loc[TWITCH, 'Graph'] = 'Twitch'
 
 # sns.set_theme(style="whitegrid")
 sns.set_style("whitegrid", {"ytick.left": True})
@@ -78,7 +80,7 @@ for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]):
                     Patch(facecolor=PALETTE_GW[k][2], edgecolor="k", label=conf[2])] 
                     
     legend_data = {a:b for a,b in zip(conf,custom_lines)}
-    g.add_legend(legend_data, conf, loc="upper center", bbox_to_anchor=(0.99, 0.98), fontsize=18, ncol=1, handletextpad=0.2, columnspacing=0.5, fancybox=True)
+    g.add_legend(legend_data, conf, loc="upper center", bbox_to_anchor=(0.9, 0.98), fontsize=18, ncol=1, handletextpad=0.2, columnspacing=0.5, fancybox=True)
     g.legend.set_title("Graph Data Structure")
     # leg._legend_box.align = "left"
     g.legend.get_frame().set_facecolor('white')
