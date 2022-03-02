@@ -40,11 +40,11 @@ ylabels = {'Memory Usage (kB)':"RAM Usage (kB)", "Duration Dijkstra (µs)":"Run 
 conf = ['Adjacency Matrix', 'Adjacency List', 'Csr']
 for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]): 
     g = sns.catplot(data=data, kind='bar', ci=99, x="# Nodes",
-    y=var, col='Graph', hue='Data structure', hue_order=conf, 
-    alpha=1, palette=PALETTE_GW[k], height=8, aspect=1.5, legend_out=False, 
+    y=var, row='Graph', hue='Data structure', hue_order=conf, 
+    alpha=1, palette=PALETTE_GW[k], height=6.5, aspect=1.5, legend_out=False, 
     sharey=False, sharex=False, margin_titles=True)
     # g.set_axis_labels("Density (%)", ylabels[var])
-    # g.set_axis_labels("# Nodes", ylabels[var])
+    g.set_axis_labels("# Nodes", ylabels[var])
     #g.despine(left=True)
     #  .set_titles("{col_name}")
     # .set_yticklabels(list(range(100,1000,100))+list(range(1000,10000,1000))+list(range(10000, 75000, 10000)))
@@ -61,13 +61,13 @@ for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]):
             # if ii!=0:
             #     plt.yticks(a, ['']*5)
 #            g.set_axis_labels("Density (%)", ylabels[var])
-            # g.set_axis_labels("# Nodes", ylabels[var])
-            for j, bar in enumerate(ax.patches):
-                bar.set_hatch(HATCHES[(j%15)//5])
-                bar.set_edgecolor('k')
+            g.set_axis_labels("# Nodes", ylabels[var])
+            # for j, bar in enumerate(ax.patches):
+            #     bar.set_hatch(HATCHES[(j%3)])
+            #     bar.set_edgecolor('k')
                 
-            for j, bar in enumerate([p for p in ax.patches if not pd.isna(p)]):
-                bar.set_hatch(HATCHES[j // len(axes)])
+            # for j, bar in enumerate([p for p in ax.patches if not pd.isna(p)]):
+            #     bar.set_hatch(HATCHES[j // len(axes)])
     #     ax.yaxis.set_minor_locator(tkr.LogLocator(base=10, subs='all'))
     #     ax.yaxis.set_minor_formatter(tkr.NullFormatter())
     # if var == 'Wall_train':
@@ -80,11 +80,11 @@ for k, var in enumerate(["Memory Usage (kB)","Duration Dijkstra (µs)"]):
                     Patch(facecolor=PALETTE_GW[k][2], edgecolor="k", label=conf[2])] 
                     
     legend_data = {a:b for a,b in zip(conf,custom_lines)}
-    g.add_legend(legend_data, conf, loc="upper center", bbox_to_anchor=(0.9, 0.98), fontsize=18, ncol=1, handletextpad=0.2, columnspacing=0.5, fancybox=True)
+    g.add_legend(legend_data, conf, loc="upper center", bbox_to_anchor=(0.6, 0.9), fontsize=18, ncol=1, handletextpad=0.2, columnspacing=0.5, fancybox=True)
     g.legend.set_title("Graph Data Structure")
     # leg._legend_box.align = "left"
     g.legend.get_frame().set_facecolor('white')
-    plt.subplots_adjust(left=0.1, bottom=0.1, right=0.94, top=0.88, hspace=0.75, wspace=0.20)
+    plt.subplots_adjust(left=0.1, bottom=0.05, right=0.94, top=0.98, hspace=0.2, wspace=0.20)
     # plt.savefig(f"Total{var}_Nodes.pdf")
     plt.savefig(f"Total{var}_Real.pdf")
     # plt.show()
